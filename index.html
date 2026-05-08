@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20260508a" />
+<link rel="stylesheet" href="styles.css?v=20260508b" />
 </head>
 <body>
 
@@ -28,6 +28,7 @@
   <nav class="site-nav" aria-label="Primary">
     <a href="#about">About</a>
     <a href="#orchestration">Orchestration</a>
+    <a href="#loom-demo">Demo</a>
     <a href="#projects">Projects</a>
     <a href="#stack">Stack</a>
     <a href="#contact">Contact</a>
@@ -491,6 +492,193 @@
         <li><span class="stat-num">10</span><span class="stat-label">AI projects in flight</span></li>
         <li><span class="stat-num">3</span><span class="stat-label">languages: EN · 粵 · 普</span></li>
       </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Loom Interactive Demo -->
+<section id="loom-demo" class="loom-demo" aria-label="Interactive demo of GateForge Loom">
+  <div class="loom-demo-head">
+    <p class="section-eyebrow">// Live demo</p>
+    <h2>How <span class="accent">GateForge Loom</span> moves a task.</h2>
+    <p class="section-sub">
+      A request enters the orchestrator, gets planned by <strong>Brain</strong>, recalls context from <strong>Memory</strong>,
+      executes through <strong>Hands</strong>, and writes its trace back. Click any node to see what it owns —
+      or watch the workflow run end-to-end.
+    </p>
+  </div>
+
+  <div class="loom-stage">
+    <!-- Step ticker -->
+    <div class="loom-ticker" id="loom-ticker" aria-live="polite">
+      <div class="loom-ticker-progress">
+        <span class="loom-step" data-step="0"><span class="loom-step-num">01</span><span class="loom-step-name">Ingest</span></span>
+        <span class="loom-step" data-step="1"><span class="loom-step-num">02</span><span class="loom-step-name">Plan</span></span>
+        <span class="loom-step" data-step="2"><span class="loom-step-num">03</span><span class="loom-step-name">Recall</span></span>
+        <span class="loom-step" data-step="3"><span class="loom-step-num">04</span><span class="loom-step-name">Execute</span></span>
+        <span class="loom-step" data-step="4"><span class="loom-step-num">05</span><span class="loom-step-name">Persist</span></span>
+      </div>
+      <div class="loom-controls">
+        <button type="button" class="loom-btn loom-btn-primary" id="loom-play" aria-label="Play workflow">
+          <span class="loom-btn-icon" aria-hidden="true">▶</span><span class="loom-btn-label">Run workflow</span>
+        </button>
+        <button type="button" class="loom-btn" id="loom-reset" aria-label="Reset">Reset</button>
+      </div>
+    </div>
+
+    <!-- Diagram + drawer -->
+    <div class="loom-grid">
+      <div class="loom-canvas" role="figure" aria-label="Animated multi-agent orchestration diagram">
+        <svg viewBox="0 0 800 540" xmlns="http://www.w3.org/2000/svg" class="loom-svg">
+          <defs>
+            <radialGradient id="loom-glow-mint" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#5cf7d0" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#5cf7d0" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="loom-glow-blue" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#7aa2ff" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#7aa2ff" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="loom-glow-warm" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffb27a" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#ffb27a" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="loom-glow-teal" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#3fb8a8" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#3fb8a8" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="loom-line-blue" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#7aa2ff" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#7aa2ff" stop-opacity="0.55"/>
+            </linearGradient>
+            <linearGradient id="loom-line-warm" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#ffb27a" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#ffb27a" stop-opacity="0.1"/>
+            </linearGradient>
+            <linearGradient id="loom-line-teal" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#3fb8a8" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#3fb8a8" stop-opacity="0.1"/>
+            </linearGradient>
+            <pattern id="loom-grid-bg" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+            </pattern>
+            <marker id="loom-arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#7aa2ff"/>
+            </marker>
+            <marker id="loom-arrow-warm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffb27a"/>
+            </marker>
+            <marker id="loom-arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#3fb8a8"/>
+            </marker>
+          </defs>
+
+          <!-- Background grid -->
+          <rect width="800" height="540" fill="url(#loom-grid-bg)" />
+
+          <!-- Wires (drawn first so nodes sit on top) -->
+          <!-- Brain → Hub -->
+          <path id="loom-wire-brain" class="loom-wire" data-step="1"
+                d="M 200 170 C 280 170, 320 250, 380 270"
+                fill="none" stroke="url(#loom-line-blue)" stroke-width="2.5"
+                marker-end="url(#loom-arrow-blue)" />
+          <!-- Memory → Hub -->
+          <path id="loom-wire-memory" class="loom-wire" data-step="2"
+                d="M 600 170 C 520 170, 480 250, 420 270"
+                fill="none" stroke="url(#loom-line-teal)" stroke-width="2.5"
+                marker-end="url(#loom-arrow-teal)" />
+          <!-- Hub → Hands -->
+          <path id="loom-wire-hands" class="loom-wire" data-step="3"
+                d="M 400 320 C 400 380, 400 400, 400 440"
+                fill="none" stroke="url(#loom-line-warm)" stroke-width="2.5"
+                marker-end="url(#loom-arrow-warm)" />
+          <!-- Hands → Memory (persist trace, dashed) -->
+          <path id="loom-wire-persist" class="loom-wire" data-step="4"
+                d="M 460 470 C 600 470, 660 320, 640 200"
+                fill="none" stroke="#3fb8a8" stroke-opacity="0.5" stroke-width="2"
+                stroke-dasharray="4 6"
+                marker-end="url(#loom-arrow-teal)" />
+
+          <!-- JSON contract chips along wires -->
+          <g class="loom-chip" data-step="1" transform="translate(280, 200)">
+            <rect x="-32" y="-12" width="64" height="24" rx="4" fill="#0c1018" stroke="#7aa2ff" stroke-opacity="0.45"/>
+            <text x="0" y="4" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#7aa2ff">plan.req</text>
+          </g>
+          <g class="loom-chip" data-step="2" transform="translate(520, 200)">
+            <rect x="-38" y="-12" width="76" height="24" rx="4" fill="#0c1018" stroke="#3fb8a8" stroke-opacity="0.45"/>
+            <text x="0" y="4" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#3fb8a8">recall.ctx</text>
+          </g>
+          <g class="loom-chip" data-step="3" transform="translate(440, 380)">
+            <rect x="-36" y="-12" width="72" height="24" rx="4" fill="#0c1018" stroke="#ffb27a" stroke-opacity="0.5"/>
+            <text x="0" y="4" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#ffb27a">exec.cmd</text>
+          </g>
+          <g class="loom-chip" data-step="4" transform="translate(620, 360)">
+            <rect x="-40" y="-12" width="80" height="24" rx="4" fill="#0c1018" stroke="#3fb8a8" stroke-opacity="0.45"/>
+            <text x="0" y="4" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#3fb8a8">trace.put</text>
+          </g>
+
+          <!-- Travelling token (animates along the active wire) -->
+          <circle id="loom-token" r="7" cx="-100" cy="-100" fill="#5cf7d0" filter="drop-shadow(0 0 6px #5cf7d0)" opacity="0"/>
+
+          <!-- Brain node -->
+          <g class="loom-node" data-node="brain" data-step="1" tabindex="0" role="button" aria-label="Brain node — Claude">
+            <circle cx="160" cy="170" r="58" fill="url(#loom-glow-blue)"/>
+            <circle class="loom-node-ring" cx="160" cy="170" r="42" fill="#0c1018" stroke="#7aa2ff" stroke-opacity="0.7" stroke-width="2"/>
+            <text x="160" y="166" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#e8edf5">BRAIN</text>
+            <text x="160" y="183" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#7aa2ff">claude</text>
+            <text x="160" y="248" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#9aa6bd">decides · plans</text>
+          </g>
+
+          <!-- Memory node -->
+          <g class="loom-node" data-node="memory" data-step="2" tabindex="0" role="button" aria-label="Memory node — Hermes">
+            <circle cx="640" cy="170" r="58" fill="url(#loom-glow-teal)"/>
+            <circle class="loom-node-ring" cx="640" cy="170" r="42" fill="#0c1018" stroke="#3fb8a8" stroke-opacity="0.7" stroke-width="2"/>
+            <text x="640" y="166" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#e8edf5">MEMORY</text>
+            <text x="640" y="183" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#3fb8a8">hermes</text>
+            <text x="640" y="248" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#9aa6bd">recall · persist</text>
+          </g>
+
+          <!-- Orchestrator hub -->
+          <g class="loom-node" data-node="hub" data-step="0" tabindex="0" role="button" aria-label="Orchestrator hub — n8n">
+            <circle cx="400" cy="275" r="62" fill="url(#loom-glow-mint)"/>
+            <polygon class="loom-hub-shape" points="400,225 446,251 446,299 400,325 354,299 354,251"
+                     fill="#0c1018" stroke="#5cf7d0" stroke-opacity="0.85" stroke-width="2"/>
+            <text x="400" y="272" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12" font-weight="600" fill="#e8edf5">ORCHESTRATOR</text>
+            <text x="400" y="289" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5cf7d0">n8n</text>
+          </g>
+
+          <!-- Hands node -->
+          <g class="loom-node" data-node="hands" data-step="3" tabindex="0" role="button" aria-label="Hands node — OpenClaw">
+            <circle cx="400" cy="470" r="58" fill="url(#loom-glow-warm)"/>
+            <circle class="loom-node-ring" cx="400" cy="470" r="42" fill="#0c1018" stroke="#ffb27a" stroke-opacity="0.75" stroke-width="2"/>
+            <text x="400" y="466" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#e8edf5">HANDS</text>
+            <text x="400" y="483" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#ffb27a">openclaw</text>
+            <text x="400" y="525" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#9aa6bd">acts · executes</text>
+          </g>
+
+          <!-- Ingest source (top-left) -->
+          <g class="loom-node loom-node-source" data-node="ingest" data-step="0">
+            <rect x="30" y="30" width="96" height="34" rx="6" fill="#0c1018" stroke="#5cf7d0" stroke-opacity="0.4"/>
+            <text x="78" y="50" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#5cf7d0">// task.in</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Drawer -->
+      <aside class="loom-drawer" id="loom-drawer" aria-live="polite">
+        <p class="loom-drawer-eyebrow" id="loom-drawer-tag">// Click a node, or run the workflow</p>
+        <h3 class="loom-drawer-title" id="loom-drawer-title">Brain · Hands · Memory</h3>
+        <p class="loom-drawer-sub" id="loom-drawer-sub">
+          Three roles, three containers, one orchestrator. Click any node on the diagram to see what it owns and what it never does.
+        </p>
+        <ul class="loom-drawer-list" id="loom-drawer-list">
+          <li><span class="loom-pill loom-pill-blue">Brain</span> Decides, plans, synthesises — never touches I/O.</li>
+          <li><span class="loom-pill loom-pill-teal">Memory</span> Recalls and persists episodic + SOP knowledge — never initiates.</li>
+          <li><span class="loom-pill loom-pill-warm">Hands</span> Executes tools and side effects — never strategises.</li>
+          <li><span class="loom-pill loom-pill-mint">Orchestrator</span> Sequences, retries, fans out — never does an agent's job.</li>
+        </ul>
+        <div class="loom-drawer-meta" id="loom-drawer-meta"></div>
+      </aside>
     </div>
   </div>
 </section>
@@ -978,6 +1166,258 @@
   }, { passive: true });
 
   // Reveal animations removed — content is always visible to prevent layout-not-ready perception
+</script>
+
+<!-- Loom interactive demo -->
+<script>
+(() => {
+  const root = document.getElementById('loom-demo');
+  if (!root) return;
+
+  const nodes = root.querySelectorAll('.loom-node[data-node]');
+  const steps = root.querySelectorAll('.loom-step');
+  const wires = {
+    1: document.getElementById('loom-wire-brain'),
+    2: document.getElementById('loom-wire-memory'),
+    3: document.getElementById('loom-wire-hands'),
+    4: document.getElementById('loom-wire-persist'),
+  };
+  const chips = root.querySelectorAll('.loom-chip');
+  const token = document.getElementById('loom-token');
+  const playBtn = document.getElementById('loom-play');
+  const resetBtn = document.getElementById('loom-reset');
+  const ingestSource = root.querySelector('.loom-node-source');
+
+  const drawerTag = document.getElementById('loom-drawer-tag');
+  const drawerTitle = document.getElementById('loom-drawer-title');
+  const drawerSub = document.getElementById('loom-drawer-sub');
+  const drawerList = document.getElementById('loom-drawer-list');
+  const drawerMeta = document.getElementById('loom-drawer-meta');
+
+  const defaultDrawer = {
+    tag: drawerTag.textContent,
+    title: drawerTitle.textContent,
+    sub: drawerSub.textContent,
+    list: drawerList.innerHTML,
+  };
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const NODE_INFO = {
+    brain: {
+      tag: '// brain · claude',
+      title: 'Brain — decides and plans',
+      sub: 'The reasoning agent. Reads the task, builds a plan, picks tools, and synthesises the answer. It never touches files, shells, or APIs directly.',
+      pills: [
+        { cls: 'loom-pill-blue', label: 'Owns', text: 'Plan, decide, route, summarise.' },
+        { cls: 'loom-pill-blue', label: 'Runtime', text: 'Anthropic Claude (Sonnet/Opus).' },
+        { cls: 'loom-pill-blue', label: 'Never', text: 'Executes side effects or persists state.' },
+      ],
+      meta: '{\n  "role": "brain",\n  "runtime": "claude-sonnet-4",\n  "in": "task.spec",\n  "out": "plan.req"\n}',
+    },
+    memory: {
+      tag: '// memory · hermes',
+      title: 'Memory — recalls and persists',
+      sub: 'The knowledge layer. Recalls SOPs, prior traces, and embeddings on request, then writes new traces back when steps complete.',
+      pills: [
+        { cls: 'loom-pill-teal', label: 'Owns', text: 'Vector recall, episodic traces, SOPs.' },
+        { cls: 'loom-pill-teal', label: 'Runtime', text: 'Postgres + pgvector, Redis hot tier.' },
+        { cls: 'loom-pill-teal', label: 'Never', text: 'Initiates work or makes decisions.' },
+      ],
+      meta: '{\n  "role": "memory",\n  "backend": "pgvector",\n  "in": "recall.q",\n  "out": "recall.ctx"\n}',
+    },
+    hands: {
+      tag: '// hands · openclaw',
+      title: 'Hands — executes side effects',
+      sub: 'The action layer. Runs commands, calls tools, hits APIs, edits files. Each invocation is sandboxed and traced.',
+      pills: [
+        { cls: 'loom-pill-warm', label: 'Owns', text: 'Tool calls, shell, HTTP, browser.' },
+        { cls: 'loom-pill-warm', label: 'Runtime', text: 'OpenClaw containers (Docker).' },
+        { cls: 'loom-pill-warm', label: 'Never', text: 'Plans or chooses what to do.' },
+      ],
+      meta: '{\n  "role": "hands",\n  "runtime": "openclaw",\n  "in": "exec.cmd",\n  "out": "trace.put"\n}',
+    },
+    hub: {
+      tag: '// orchestrator · n8n',
+      title: 'Orchestrator — sequences and retries',
+      sub: 'The control plane. Routes JSON contracts between Brain, Memory, and Hands; handles retries, fan-out, and observability.',
+      pills: [
+        { cls: 'loom-pill-mint', label: 'Owns', text: 'Sequencing, retries, fan-out, traces.' },
+        { cls: 'loom-pill-mint', label: 'Runtime', text: 'n8n workflow engine.' },
+        { cls: 'loom-pill-mint', label: 'Never', text: 'Does an agent\u2019s job itself.' },
+      ],
+      meta: '{\n  "role": "orchestrator",\n  "engine": "n8n",\n  "contracts": ["plan.req", "recall.ctx", "exec.cmd", "trace.put"]\n}',
+    },
+  };
+
+  function showNodeInfo(key) {
+    const info = NODE_INFO[key];
+    if (!info) return;
+    drawerTag.textContent = info.tag;
+    drawerTitle.textContent = info.title;
+    drawerSub.textContent = info.sub;
+    drawerList.innerHTML = info.pills.map(p =>
+      `<li><span class="loom-pill ${p.cls}">${p.label}</span> ${p.text}</li>`
+    ).join('');
+    drawerMeta.textContent = info.meta;
+    drawerMeta.classList.add('show');
+    nodes.forEach(n => n.classList.toggle('active', n.dataset.node === key));
+  }
+
+  function resetDrawer() {
+    drawerTag.textContent = defaultDrawer.tag;
+    drawerTitle.textContent = defaultDrawer.title;
+    drawerSub.textContent = defaultDrawer.sub;
+    drawerList.innerHTML = defaultDrawer.list;
+    drawerMeta.classList.remove('show');
+    drawerMeta.textContent = '';
+    nodes.forEach(n => n.classList.remove('active'));
+  }
+
+  // Click + keyboard handlers on nodes
+  nodes.forEach(node => {
+    const key = node.dataset.node;
+    node.addEventListener('click', () => showNodeInfo(key));
+    node.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        showNodeInfo(key);
+      }
+    });
+  });
+
+  // ===== Workflow play =====
+  let playing = false;
+  let timers = [];
+
+  function clearTimers() {
+    timers.forEach(t => { clearTimeout(t); cancelAnimationFrame(t); });
+    timers = [];
+  }
+
+  function fullReset() {
+    clearTimers();
+    playing = false;
+    steps.forEach(s => s.classList.remove('active', 'done'));
+    Object.values(wires).forEach(w => w && w.classList.remove('active'));
+    chips.forEach(c => c.classList.remove('active'));
+    nodes.forEach(n => n.classList.remove('active', 'pulse'));
+    if (ingestSource) ingestSource.classList.remove('active');
+    token.setAttribute('cx', -100);
+    token.setAttribute('cy', -100);
+    token.setAttribute('opacity', 0);
+    resetDrawer();
+    playBtn.disabled = false;
+    playBtn.querySelector('.loom-btn-label').textContent = 'Run workflow';
+  }
+
+  function animateToken(wire, duration, cb) {
+    if (!wire || reduceMotion) {
+      cb && cb();
+      return;
+    }
+    const len = wire.getTotalLength();
+    token.setAttribute('opacity', 1);
+    const start = performance.now();
+    function frame(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const pt = wire.getPointAtLength(t * len);
+      token.setAttribute('cx', pt.x);
+      token.setAttribute('cy', pt.y);
+      if (t < 1) {
+        const id = requestAnimationFrame(frame);
+        timers.push(id);
+      } else {
+        token.setAttribute('opacity', 0);
+        cb && cb();
+      }
+    }
+    const id = requestAnimationFrame(frame);
+    timers.push(id);
+  }
+
+  function pulseNode(key) {
+    const n = root.querySelector(`.loom-node[data-node="${key}"]`);
+    if (!n) return;
+    n.classList.add('pulse');
+    const t = setTimeout(() => n.classList.remove('pulse'), 900);
+    timers.push(t);
+  }
+
+  function setStepActive(idx) {
+    steps.forEach((s, i) => {
+      s.classList.toggle('active', i === idx);
+      if (i < idx) s.classList.add('done');
+    });
+  }
+
+  // Sequence: 0 ingest → 1 plan (brain→hub) → 2 recall (memory→hub) → 3 exec (hub→hands) → 4 persist (hands→memory)
+  function play() {
+    if (playing) return;
+    playing = true;
+    fullReset();
+    playing = true;
+    playBtn.disabled = true;
+    playBtn.querySelector('.loom-btn-label').textContent = 'Running…';
+
+    const sequence = [
+      // step 0: Ingest
+      () => {
+        setStepActive(0);
+        if (ingestSource) ingestSource.classList.add('active');
+        showNodeInfo('hub');
+      },
+      // step 1: Plan — brain → hub
+      () => {
+        setStepActive(1);
+        wires[1].classList.add('active');
+        chips[0].classList.add('active');
+        showNodeInfo('brain');
+        animateToken(wires[1], 900, () => pulseNode('hub'));
+      },
+      // step 2: Recall — memory → hub
+      () => {
+        setStepActive(2);
+        wires[2].classList.add('active');
+        chips[1].classList.add('active');
+        showNodeInfo('memory');
+        animateToken(wires[2], 900, () => pulseNode('hub'));
+      },
+      // step 3: Execute — hub → hands
+      () => {
+        setStepActive(3);
+        wires[3].classList.add('active');
+        chips[2].classList.add('active');
+        showNodeInfo('hands');
+        animateToken(wires[3], 900, () => pulseNode('hands'));
+      },
+      // step 4: Persist — hands → memory
+      () => {
+        setStepActive(4);
+        wires[4].classList.add('active');
+        chips[3].classList.add('active');
+        showNodeInfo('memory');
+        animateToken(wires[4], 1100, () => pulseNode('memory'));
+      },
+      // done
+      () => {
+        steps.forEach(s => { s.classList.remove('active'); s.classList.add('done'); });
+        playing = false;
+        playBtn.disabled = false;
+        playBtn.querySelector('.loom-btn-label').textContent = 'Run again';
+      },
+    ];
+
+    const stepDelay = reduceMotion ? 400 : 1500;
+    sequence.forEach((fn, i) => {
+      const t = setTimeout(fn, i * stepDelay);
+      timers.push(t);
+    });
+  }
+
+  playBtn.addEventListener('click', play);
+  resetBtn.addEventListener('click', fullReset);
+})();
 </script>
 
 </body>

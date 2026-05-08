@@ -1279,3 +1279,366 @@ h3 .ai-built-badge { vertical-align: 4px; }
 
 /* Hide the now-redundant orchestration cover image styles if any leak */
 .orch-cover { display: none !important; }
+
+/* ============================================
+   Loom Interactive Demo
+   ============================================ */
+.loom-demo {
+  padding: clamp(60px, 8vw, 110px) clamp(20px, 4vw, 64px);
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.loom-demo-head {
+  max-width: 760px;
+  margin-bottom: 44px;
+}
+.loom-demo-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4.4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 8px 0 18px;
+  color: var(--text);
+}
+.loom-demo-head .accent {
+  color: var(--accent);
+}
+.loom-demo-head .section-sub {
+  color: var(--text-mute);
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.6;
+  max-width: 680px;
+}
+.loom-demo-head .section-sub strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.loom-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Step ticker */
+.loom-ticker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+.loom-ticker-progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+.loom-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.02);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  transition: all 0.35s ease;
+  white-space: nowrap;
+}
+.loom-step-num {
+  color: var(--text-dim);
+  font-feature-settings: 'tnum' 1;
+}
+.loom-step-name {
+  color: var(--text-mute);
+  letter-spacing: 0.02em;
+}
+.loom-step.active {
+  border-color: var(--accent);
+  background: rgba(92,247,208,0.08);
+  box-shadow: 0 0 0 1px rgba(92,247,208,0.4), 0 0 24px rgba(92,247,208,0.15);
+}
+.loom-step.active .loom-step-num {
+  color: var(--accent);
+}
+.loom-step.active .loom-step-name {
+  color: var(--text);
+}
+.loom-step.done {
+  border-color: rgba(92,247,208,0.3);
+}
+.loom-step.done .loom-step-num,
+.loom-step.done .loom-step-name {
+  color: var(--text-mute);
+}
+
+.loom-controls {
+  display: flex;
+  gap: 8px;
+}
+.loom-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.loom-btn:hover {
+  border-color: var(--text-mute);
+  background: rgba(255,255,255,0.03);
+}
+.loom-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.loom-btn-primary {
+  border-color: var(--accent);
+  color: #07090f;
+  background: var(--accent);
+}
+.loom-btn-primary:hover {
+  background: #6dffe0;
+  border-color: #6dffe0;
+  color: #07090f;
+}
+.loom-btn-icon {
+  font-size: 10px;
+}
+.loom-btn-label {
+  font-weight: 600;
+}
+
+/* Diagram + drawer grid */
+.loom-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+.loom-canvas {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  overflow: hidden;
+}
+.loom-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(92,247,208,0.04), transparent 60%);
+  pointer-events: none;
+}
+.loom-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Nodes */
+.loom-node {
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.loom-node:hover,
+.loom-node:focus-visible {
+  outline: none;
+  filter: brightness(1.15) drop-shadow(0 0 8px rgba(92,247,208,0.3));
+}
+.loom-node:focus-visible .loom-node-ring,
+.loom-node:focus-visible .loom-hub-shape {
+  stroke-opacity: 1;
+  stroke-width: 3;
+}
+.loom-node.active .loom-node-ring,
+.loom-node.active .loom-hub-shape {
+  stroke-opacity: 1;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 10px currentColor);
+}
+.loom-node.pulse {
+  animation: loom-pulse 0.9s ease-out;
+}
+@keyframes loom-pulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.loom-node-source {
+  cursor: default;
+}
+.loom-node-source.active rect {
+  stroke-opacity: 1;
+  filter: drop-shadow(0 0 8px #5cf7d0);
+}
+
+/* Wires */
+.loom-wire {
+  opacity: 0.25;
+  transition: opacity 0.5s ease;
+}
+.loom-wire.active {
+  opacity: 1;
+  animation: loom-wire-draw 0.9s ease-out;
+}
+@keyframes loom-wire-draw {
+  from { stroke-dashoffset: 600; }
+  to { stroke-dashoffset: 0; }
+}
+.loom-wire.active:not(#loom-wire-persist) {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 0;
+}
+
+/* Chips */
+.loom-chip {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.loom-chip.active {
+  opacity: 1;
+  animation: loom-chip-in 0.4s ease-out;
+}
+@keyframes loom-chip-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Drawer */
+.loom-drawer {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.loom-drawer-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  margin: 0;
+  text-transform: lowercase;
+}
+.loom-drawer-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--text);
+}
+.loom-drawer-sub {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-mute);
+  margin: 0;
+}
+.loom-drawer-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.loom-drawer-list li {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-mute);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.015);
+}
+.loom-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.loom-pill-blue { color: #7aa2ff; background: rgba(122,162,255,0.1); border: 1px solid rgba(122,162,255,0.3); }
+.loom-pill-teal { color: #3fb8a8; background: rgba(63,184,168,0.1); border: 1px solid rgba(63,184,168,0.3); }
+.loom-pill-warm { color: #ffb27a; background: rgba(255,178,122,0.1); border: 1px solid rgba(255,178,122,0.3); }
+.loom-pill-mint { color: var(--accent); background: rgba(92,247,208,0.1); border: 1px solid rgba(92,247,208,0.3); }
+
+.loom-drawer-meta {
+  margin-top: auto;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-mute);
+  white-space: pre-wrap;
+  overflow-x: auto;
+  display: none;
+}
+.loom-drawer-meta.show {
+  display: block;
+}
+.loom-drawer-meta .k { color: #7aa2ff; }
+.loom-drawer-meta .s { color: #5cf7d0; }
+.loom-drawer-meta .n { color: #ffb27a; }
+
+/* Mobile */
+@media (max-width: 900px) {
+  .loom-grid {
+    grid-template-columns: 1fr;
+  }
+  .loom-ticker {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .loom-controls {
+    justify-content: flex-end;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .loom-wire,
+  .loom-chip,
+  .loom-node,
+  .loom-step {
+    transition: none !important;
+    animation: none !important;
+  }
+}
