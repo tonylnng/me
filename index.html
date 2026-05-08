@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20260507c" />
+<link rel="stylesheet" href="styles.css?v=20260508a" />
 </head>
 <body>
 
@@ -506,6 +506,74 @@
     </p>
   </div>
 
+  <!-- Spotlight band — highlighted projects -->
+  <div class="spotlight-band">
+    <p class="spotlight-eyebrow">✦ Spotlight</p>
+    <h3 class="spotlight-title">The orchestration layer — governing many agents, not just calling one.</h3>
+    <p class="spotlight-sub">
+      Two projects sit at the center of Tony's current work: a composable open-source stack that proves the
+      Brain · Hands · Memory pattern, and a vendor-neutral protocol that lets agents from different runtimes coordinate on the same task.
+    </p>
+
+    <div class="spotlight-row">
+      <!-- Spotlight: GateForge Loom -->
+      <article class="project project-spotlight">
+        <div class="project-media">
+          <img src="assets/project_loom.png?v=2" alt="GateForge Loom workflow diagram — Brain, Hands, Memory agents connected to a central orchestrator hub through JSON contracts" />
+          <span class="status status-build">Public OSS · PoC</span>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">COMPOSABLE MULTI-AGENT STACK · OPEN SOURCE</p>
+          <h3>GateForge Loom</h3>
+          <p class="project-tagline">Weave intelligent agents into workflows — Brain (Claude) · Hands (OpenClaw) · Memory (Hermes), wired via n8n on Docker.</p>
+          <p>
+            A layered multi-agent system that enforces single-responsibility per layer.
+            <strong>Brain</strong> decides, <strong>Hands</strong> act, <strong>Memory</strong> remembers — each its own Docker container,
+            each exposing a small typed API, each upgradable independently. n8n orchestrates the loom; Redis carries job state;
+            Postgres + pgvector keeps episodic and SOP memory.
+          </p>
+          <ul class="project-bullets">
+            <li>Brain · Hands · Memory split — no prompt soup, every layer has one job</li>
+            <li>JSON contracts between agents, every run leaves a memory trace</li>
+            <li>Drop-in agents (Validator, Critic, Router, Reviewer…) as additional containers</li>
+            <li>Single-VM Docker Compose deployment, ready to scale to fan-out workflows</li>
+          </ul>
+          <div class="project-stack">
+            <span>Python</span><span>FastAPI</span><span>n8n</span><span>Postgres + pgvector</span>
+            <span>Redis</span><span>Docker Compose</span><span>Anthropic</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Spotlight: AI-AO -->
+      <article class="project project-spotlight">
+        <div class="project-media">
+          <img src="assets/project_aiao.png" alt="AI-AO vendor-neutral agent orchestration mesh visualization" />
+          <span class="status status-build">In Build</span>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">VENDOR-NEUTRAL ORCHESTRATION PROTOCOL</p>
+          <h3>AI-AO · Agent Orchestration Framework</h3>
+          <p class="project-tagline">A vendor-neutral, methodology-neutral protocol for multi-agent coordination.</p>
+          <p>
+            A common control plane that lets agents from different vendors — OpenClaw, Perplexity Computer,
+            Manus, ChatGPT Agent — coordinate on the same task without being locked into one runtime.
+            Event-driven, no polling, durable by design.
+          </p>
+          <ul class="project-bullets">
+            <li>GitHub as the source of truth, NATS JetStream as the event bus</li>
+            <li>MinIO for shared artifacts, signed handoffs between agents</li>
+            <li>Pluggable adapters per agent runtime, scoped tokens per role</li>
+            <li>Vendor-portable — swap runtimes without rewriting workflows</li>
+          </ul>
+          <div class="project-stack">
+            <span>NATS JetStream</span><span>MinIO</span><span>GitHub</span><span>Shell</span><span>Docker</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
   <!-- Section: Multi-agent SDLC platform -->
   <p class="project-group-label">⟶ The GateForge stack · multi-agent SDLC platform</p>
 
@@ -538,61 +606,8 @@
     </div>
   </article>
 
-  <!-- Solo featured: GateForge Loom (public OSS) -->
-  <article class="project project-featured">
-    <div class="project-media">
-      <img src="assets/project_loom.png" alt="Multi-agent orchestration loom — Brain, Hands, Memory threads woven through a digital weaving frame" />
-      <span class="status status-build">Public OSS · PoC</span>
-    </div>
-    <div class="project-body">
-      <p class="project-tag">COMPOSABLE MULTI-AGENT STACK · OPEN SOURCE</p>
-      <h3>GateForge Loom</h3>
-      <p class="project-tagline">Weave intelligent agents into workflows — Brain (Claude) · Hands (OpenClaw) · Memory (Hermes), wired via n8n on Docker.</p>
-      <p>
-        A layered multi-agent system that enforces single-responsibility per layer. Brain decides, Hands act, Memory
-        remembers — each its own Docker container, each exposing a small typed API, each upgradable independently.
-        n8n orchestrates the loom; Redis carries job state; Postgres + pgvector keeps episodic and SOP memory.
-      </p>
-      <ul class="project-bullets">
-        <li>Brain · Hands · Memory split — no prompt soup, every layer has one job</li>
-        <li>JSON contracts between agents, every run leaves a memory trace</li>
-        <li>Drop-in agents (Validator, Critic, Router, Reviewer…) as additional containers</li>
-        <li>Single-VM Docker Compose deployment, ready to scale to fan-out workflows</li>
-      </ul>
-      <div class="project-stack">
-        <span>Python</span><span>FastAPI</span><span>n8n</span><span>Postgres + pgvector</span>
-        <span>Redis</span><span>Docker Compose</span><span>Anthropic</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- Two-up: AI-AO + OpenClaw Guideline -->
+  <!-- Two-up: OpenClaw Guideline + Admin Portal -->
   <div class="project-row">
-    <article class="project">
-      <div class="project-media">
-        <img src="assets/project_aiao.png" alt="Vendor-neutral agent orchestration mesh visualization" />
-        <span class="status status-build">In Build</span>
-      </div>
-      <div class="project-body">
-        <p class="project-tag">VENDOR-NEUTRAL ORCHESTRATION</p>
-        <h3>AI-AO · Agent Orchestration Framework</h3>
-        <p class="project-tagline">A vendor-neutral, methodology-neutral protocol for multi-agent coordination.</p>
-        <p>
-          A common control plane that lets agents from different vendors — OpenClaw, Perplexity Computer,
-          Manus, ChatGPT Agent — coordinate on the same task without being locked into one runtime.
-          Event-driven, no polling, durable by design.
-        </p>
-        <ul class="project-bullets">
-          <li>GitHub as the source of truth, NATS JetStream as the event bus</li>
-          <li>MinIO for shared artifacts, signed handoffs between agents</li>
-          <li>Pluggable adapters per agent runtime, scoped tokens per role</li>
-        </ul>
-        <div class="project-stack">
-          <span>NATS JetStream</span><span>MinIO</span><span>GitHub</span><span>Shell</span><span>Docker</span>
-        </div>
-      </div>
-    </article>
-
     <article class="project">
       <div class="project-media">
         <img src="assets/project_blueprint.png" alt="Agentic SDLC methodology blueprint visualization" />
@@ -617,10 +632,7 @@
         </div>
       </div>
     </article>
-  </div>
 
-  <!-- Two-up: Admin Portal + ClawDeck -->
-  <div class="project-row">
     <article class="project">
       <div class="project-media">
         <img src="assets/project_adminportal.png" alt="Read-only operational control tower visualization" />
@@ -644,33 +656,34 @@
         </div>
       </div>
     </article>
-
-    <article class="project">
-      <div class="project-media">
-        <img src="assets/project_mcphub.png" alt="Open-source agent dashboard visualization" />
-        <span class="status status-build">In Build · OSS</span>
-      </div>
-      <div class="project-body">
-        <p class="project-tag">OPEN-SOURCE AGENT DASHBOARD</p>
-        <h3>ClawDeck <span class="ai-built-badge" title="Built by AI Team">⚡ AI-built</span></h3>
-        <p class="project-tagline">An open-source dashboard for managing OpenClaw multi-agent setups.</p>
-        <p>
-          A single pane of glass for the people running multi-agent stacks day to day —
-          chatting with agents, watching their logs, browsing their memory, scheduling their cron jobs.
-          One-command Docker install.
-        </p>
-        <ul class="project-bullets">
-          <li>Multi-agent chat with SSE streaming, file and image upload</li>
-          <li>Real-time log viewer, workspace browser, LanceDB memory browser</li>
-          <li>Analytics, conversation search, prompt playground, cron manager</li>
-          <li>JWT auth, dark/light mode, mobile responsive</li>
-        </ul>
-        <div class="project-stack">
-          <span>TypeScript</span><span>React</span><span>NestJS</span><span>SSE</span><span>LanceDB</span><span>Docker</span>
-        </div>
-      </div>
-    </article>
   </div>
+
+  <!-- Featured: ClawDeck -->
+  <article class="project project-featured">
+    <div class="project-media">
+      <img src="assets/project_mcphub.png" alt="Open-source agent dashboard visualization" />
+      <span class="status status-build">In Build · OSS</span>
+    </div>
+    <div class="project-body">
+      <p class="project-tag">OPEN-SOURCE AGENT DASHBOARD</p>
+      <h3>ClawDeck <span class="ai-built-badge" title="Built by AI Team">⚡ AI-built</span></h3>
+      <p class="project-tagline">An open-source dashboard for managing OpenClaw multi-agent setups.</p>
+      <p>
+        A single pane of glass for the people running multi-agent stacks day to day —
+        chatting with agents, watching their logs, browsing their memory, scheduling their cron jobs.
+        One-command Docker install.
+      </p>
+      <ul class="project-bullets">
+        <li>Multi-agent chat with SSE streaming, file and image upload</li>
+        <li>Real-time log viewer, workspace browser, LanceDB memory browser</li>
+        <li>Analytics, conversation search, prompt playground, cron manager</li>
+        <li>JWT auth, dark/light mode, mobile responsive</li>
+      </ul>
+      <div class="project-stack">
+        <span>TypeScript</span><span>React</span><span>NestJS</span><span>SSE</span><span>LanceDB</span><span>Docker</span>
+      </div>
+    </div>
+  </article>
 
   <!-- Section: Knowledge & collaboration -->
   <p class="project-group-label">⟶ Knowledge &amp; collaboration · how teams and agents share context</p>

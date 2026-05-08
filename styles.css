@@ -578,6 +578,83 @@ h2 {
   .project-featured .project-media { aspect-ratio: 16/10; min-height: 0; }
 }
 
+/* Spotlight band — elevated treatment for highlighted projects */
+.spotlight-band {
+  margin: 8px 0 56px;
+  padding: 28px 0 40px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(14, 165, 233, 0.06), transparent 70%),
+    radial-gradient(60% 50% at 90% 100%, rgba(245, 158, 11, 0.04), transparent 70%);
+}
+.spotlight-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent, #0ea5e9);
+  margin: 0 0 8px;
+}
+.spotlight-eyebrow::before,
+.spotlight-eyebrow::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-strong, rgba(255,255,255,0.18)), transparent);
+}
+.spotlight-eyebrow::before { max-width: 80px; }
+.spotlight-title {
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+.spotlight-sub {
+  color: var(--text-soft, #94a3b8);
+  margin: 0 0 28px;
+  max-width: 720px;
+}
+.project-spotlight {
+  position: relative;
+  border: 1px solid var(--line-strong, rgba(255,255,255,0.18));
+  box-shadow:
+    0 0 0 1px rgba(14, 165, 233, 0.14) inset,
+    0 18px 60px -28px rgba(14, 165, 233, 0.35),
+    0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.project-spotlight::before {
+  content: "✦ HIGHLIGHTED";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  font-family: var(--mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: #0b1220;
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+  padding: 5px 10px;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+.spotlight-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.spotlight-row .project { grid-template-rows: auto 1fr; }
+.spotlight-row .project-media { aspect-ratio: 4/3; }
+@media (max-width: 900px) {
+  .spotlight-row { grid-template-columns: 1fr; }
+}
+
 .project-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
