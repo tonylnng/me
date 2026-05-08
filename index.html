@@ -538,6 +538,34 @@
     </div>
   </article>
 
+  <!-- Solo featured: GateForge Loom (public OSS) -->
+  <article class="project project-featured">
+    <div class="project-media">
+      <img src="assets/project_loom.png" alt="Multi-agent orchestration loom — Brain, Hands, Memory threads woven through a digital weaving frame" />
+      <span class="status status-build">Public OSS · PoC</span>
+    </div>
+    <div class="project-body">
+      <p class="project-tag">COMPOSABLE MULTI-AGENT STACK · OPEN SOURCE</p>
+      <h3>GateForge Loom</h3>
+      <p class="project-tagline">Weave intelligent agents into workflows — Brain (Claude) · Hands (OpenClaw) · Memory (Hermes), wired via n8n on Docker.</p>
+      <p>
+        A layered multi-agent system that enforces single-responsibility per layer. Brain decides, Hands act, Memory
+        remembers — each its own Docker container, each exposing a small typed API, each upgradable independently.
+        n8n orchestrates the loom; Redis carries job state; Postgres + pgvector keeps episodic and SOP memory.
+      </p>
+      <ul class="project-bullets">
+        <li>Brain · Hands · Memory split — no prompt soup, every layer has one job</li>
+        <li>JSON contracts between agents, every run leaves a memory trace</li>
+        <li>Drop-in agents (Validator, Critic, Router, Reviewer…) as additional containers</li>
+        <li>Single-VM Docker Compose deployment, ready to scale to fan-out workflows</li>
+      </ul>
+      <div class="project-stack">
+        <span>Python</span><span>FastAPI</span><span>n8n</span><span>Postgres + pgvector</span>
+        <span>Redis</span><span>Docker Compose</span><span>Anthropic</span>
+      </div>
+    </div>
+  </article>
+
   <!-- Two-up: AI-AO + OpenClaw Guideline -->
   <div class="project-row">
     <article class="project">

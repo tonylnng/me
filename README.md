@@ -24,6 +24,12 @@ Three decades of building software and steering large-scale project delivery —
 
 ---
 
+## Open Source
+
+- **[gateforge-loom](https://github.com/tonylnng/gateforge-loom)** — *Weave intelligent agents into workflows.* A composable multi-agent orchestration stack: **Brain** (Claude) · **Hands** (OpenClaw) · **Memory** (Hermes), orchestrated by n8n on Docker, with Postgres + pgvector for episodic and SOP memory. Single-responsibility per layer, JSON contracts between agents, drop-in additional agents as containers.
+
+---
+
 ## Focus Areas
 
 - **Multi-agent orchestration** — governing AI agents across vendors, not just using them
@@ -55,6 +61,7 @@ A working showcase of the platforms, frameworks, and internal tools he is active
 | Project | Status | Description |
 |---|---|---|
 | **GateForge AI** | Production | Hub-and-spoke pipeline of specialist AI agents — Architect, Designer, Developers, QC, Operator, PA |
+| **[GateForge Loom](https://github.com/tonylnng/gateforge-loom)** | Public OSS · PoC | Composable multi-agent stack — Brain (Claude) · Hands (OpenClaw) · Memory (Hermes), wired via n8n on Docker |
 | **GateForge Admin Portal** ⚡ | Production | Read-only operational control tower for the agentic SDLC |
 | **ClawDeck** ⚡ | In Build · OSS | Open-source dashboard for managing OpenClaw multi-agent setups |
 | **KBMesh** ⚡ | Live | Secure on-premise AI-native knowledge mesh — one mesh, every agent, zero leakage |
