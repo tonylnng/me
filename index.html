@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20260508b" />
+<link rel="stylesheet" href="styles.css?v=20260508c" />
 </head>
 <body>
 
@@ -29,6 +29,7 @@
     <a href="#about">About</a>
     <a href="#orchestration">Orchestration</a>
     <a href="#loom-demo">Demo</a>
+    <a href="#playground">Playground</a>
     <a href="#projects">Projects</a>
     <a href="#stack">Stack</a>
     <a href="#contact">Contact</a>
@@ -679,6 +680,91 @@
         </ul>
         <div class="loom-drawer-meta" id="loom-drawer-meta"></div>
       </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Live API Playground -->
+<section id="playground" class="playground" aria-label="Live GateForge Loom API playground">
+  <div class="playground-head">
+    <p class="section-eyebrow">// API playground</p>
+    <h2>Send a task. Watch <span class="accent">Loom</span> orchestrate it.</h2>
+    <p class="section-sub">Type a prompt or pick a preset. The simulated <strong>GateForge Loom</strong> stack streams back live agent messages — Brain plans, Memory recalls, Hands execute, the orchestrator finalises. JSON contracts match the real Loom runtime; latency and shape are simulated client-side.</p>
+  </div>
+
+  <div class="pg-stage">
+    <!-- Preset chips -->
+    <div class="pg-presets" role="group" aria-label="Example prompts">
+      <span class="pg-presets-label">// try</span>
+      <button class="pg-preset" type="button" data-preset="code-review">
+        <span class="pg-preset-icon">⧉</span>
+        <span class="pg-preset-label">Code review</span>
+      </button>
+      <button class="pg-preset" type="button" data-preset="ticket-triage">
+        <span class="pg-preset-icon">◔</span>
+        <span class="pg-preset-label">Ticket triage</span>
+      </button>
+      <button class="pg-preset" type="button" data-preset="knowledge-query">
+        <span class="pg-preset-icon">◈</span>
+        <span class="pg-preset-label">Knowledge query</span>
+      </button>
+    </div>
+
+    <!-- Console -->
+    <div class="pg-console">
+      <!-- Console header -->
+      <div class="pg-console-head">
+        <div class="pg-console-dots" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="pg-console-title">
+          <span class="pg-console-method">POST</span>
+          <span class="pg-console-path">/v1/loom/tasks</span>
+        </div>
+        <div class="pg-console-status" id="pg-status">
+          <span class="pg-console-dot" aria-hidden="true"></span>
+          <span class="pg-console-status-label">idle</span>
+        </div>
+      </div>
+
+      <!-- Stream area -->
+      <div class="pg-stream" id="pg-stream" role="log" aria-live="polite" aria-relevant="additions">
+        <div class="pg-stream-empty" id="pg-stream-empty">
+          <div class="pg-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12h16M4 6h16M4 18h10"/>
+            </svg>
+          </div>
+          <p class="pg-empty-title">Stream awaiting</p>
+          <p class="pg-empty-sub">Submit a task and the orchestrator will stream agent messages back in real time.</p>
+        </div>
+      </div>
+
+      <!-- Input bar -->
+      <form class="pg-form" id="pg-form" autocomplete="off">
+        <div class="pg-input-wrap">
+          <span class="pg-input-prefix" aria-hidden="true">❯</span>
+          <input
+            class="pg-input"
+            id="pg-input"
+            type="text"
+            placeholder="Describe a task. e.g. Review this pull request for security issues..."
+            aria-label="Task prompt"
+            maxlength="280"
+          />
+        </div>
+        <button class="pg-submit" type="submit" id="pg-submit">
+          <span class="pg-submit-label">Run task</span>
+          <span class="pg-submit-icon" aria-hidden="true">→</span>
+        </button>
+      </form>
+
+      <!-- Footer note -->
+      <div class="pg-console-foot">
+        <span class="pg-foot-mono">200 OK</span>
+        <span class="pg-foot-sep">·</span>
+        <span>Simulated. No data leaves your browser.</span>
+      </div>
     </div>
   </div>
 </section>
@@ -1417,6 +1503,229 @@
 
   playBtn.addEventListener('click', play);
   resetBtn.addEventListener('click', fullReset);
+})();
+</script>
+
+<!-- API Playground simulation -->
+<script>
+(() => {
+  const root = document.getElementById('playground');
+  if (!root) return;
+
+  const stream = document.getElementById('pg-stream');
+  const form = document.getElementById('pg-form');
+  const input = document.getElementById('pg-input');
+  const submit = document.getElementById('pg-submit');
+  const statusEl = document.getElementById('pg-status');
+  const statusLabel = statusEl.querySelector('.pg-console-status-label');
+  const presets = root.querySelectorAll('.pg-preset');
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const speed = reduceMotion ? 0.4 : 1;
+  let running = false;
+
+  // ===== Preset templates =====
+  const PRESETS = {
+    'code-review': {
+      prompt: 'Review PR #482 — auth middleware changes — flag any security issues.',
+      sequence: [
+        { agent: 'orchestrator', delay: 280, json: { event: 'task.received', task_id: 'tsk_8a3f', source: 'api', ts: 'T+0ms' } },
+        { agent: 'brain', delay: 520, json: { event: 'plan.req', model: 'claude-sonnet-4', plan: ['fetch_diff', 'recall_security_sops', 'static_analyze', 'summarise'], confidence: 0.91 } },
+        { agent: 'memory', delay: 680, json: { event: 'recall.ctx', backend: 'pgvector', hits: 3, top: ['sop:auth-review-v2', 'trace:pr-441-jwt-leak', 'sop:secrets-policy'] } },
+        { agent: 'hands', delay: 900, json: { event: 'exec.cmd', tool: 'github.diff', args: { pr: 482 }, status: 'ok', files_changed: 7, lines: '+184 -52' } },
+        { agent: 'hands', delay: 740, json: { event: 'exec.cmd', tool: 'semgrep.scan', rules: 'p/owasp-top10', findings: 2, status: 'ok' } },
+        { agent: 'brain', delay: 820, json: { event: 'synthesise', findings: [{ file: 'middleware/auth.ts', line: 47, severity: 'high', issue: 'jwt verified without audience check' }, { file: 'middleware/auth.ts', line: 92, severity: 'medium', issue: 'token logged at debug level' }] } },
+        { agent: 'memory', delay: 380, json: { event: 'trace.put', trace_id: 'tr_8a3f_fin', persist: 'ok' } },
+        { agent: 'result', delay: 520, json: { status: 'ok', summary: '2 findings: 1 high (missing aud claim verification), 1 medium (token in debug logs). Recommend block until line 47 patched.', latency_ms: 4842, agents: ['brain','memory','hands'] } },
+      ],
+    },
+    'ticket-triage': {
+      prompt: 'New support ticket: "App crashes when uploading >10MB file". Triage and route.',
+      sequence: [
+        { agent: 'orchestrator', delay: 220, json: { event: 'task.received', task_id: 'tsk_b71c', channel: 'support.zendesk', priority: 'auto' } },
+        { agent: 'brain', delay: 460, json: { event: 'plan.req', model: 'claude-sonnet-4', plan: ['classify_intent', 'recall_similar', 'route'], confidence: 0.88 } },
+        { agent: 'memory', delay: 620, json: { event: 'recall.ctx', similar_tickets: 4, cluster: 'upload-size-limit', last_resolution: 'frontend chunk-upload patch (#1284)' } },
+        { agent: 'hands', delay: 780, json: { event: 'exec.cmd', tool: 'jira.create', project: 'PLAT', type: 'bug', priority: 'P2', assignee: 'platform-team', linked: 'PR #1284' } },
+        { agent: 'hands', delay: 540, json: { event: 'exec.cmd', tool: 'zendesk.reply', template: 'known_issue_workaround', status: 'sent' } },
+        { agent: 'memory', delay: 360, json: { event: 'trace.put', trace_id: 'tr_b71c_fin', persist: 'ok' } },
+        { agent: 'result', delay: 480, json: { status: 'ok', summary: 'Triaged as duplicate of upload-size-limit cluster. JIRA PLAT-3092 created (P2). Customer auto-replied with chunk-upload workaround.', latency_ms: 3460, ticket: 'PLAT-3092' } },
+      ],
+    },
+    'knowledge-query': {
+      prompt: 'How does Loom handle retries when a Hands tool call times out?',
+      sequence: [
+        { agent: 'orchestrator', delay: 200, json: { event: 'task.received', task_id: 'tsk_4d92', mode: 'qa' } },
+        { agent: 'brain', delay: 400, json: { event: 'plan.req', model: 'claude-sonnet-4', plan: ['recall_docs', 'compose_answer'], scope: 'internal-kb' } },
+        { agent: 'memory', delay: 720, json: { event: 'recall.ctx', backend: 'pgvector', sources: ['docs/loom-runtime.md#retries', 'sop:hands-timeout-policy', 'rfc-014:exec-retry'], chunks: 8 } },
+        { agent: 'brain', delay: 920, json: { event: 'synthesise', tokens_in: 2104, tokens_out: 312, citations: 3 } },
+        { agent: 'memory', delay: 320, json: { event: 'trace.put', trace_id: 'tr_4d92_fin', persist: 'ok' } },
+        { agent: 'result', delay: 540, json: { status: 'ok', summary: 'Hands timeouts trigger exponential backoff (250ms base, x2, max 4 attempts). After max retries, n8n routes the failure node, marks the trace failed, and emits a hands.dead_letter event the Brain can re-plan against.', latency_ms: 3102, sources: 3 } },
+      ],
+    },
+  };
+
+  // ===== Generic fallback for free-form prompts =====
+  function buildGenericSequence(prompt) {
+    const id = 'tsk_' + Math.random().toString(36).slice(2, 6);
+    const trimmed = prompt.length > 80 ? prompt.slice(0, 77) + '...' : prompt;
+    return [
+      { agent: 'orchestrator', delay: 240, json: { event: 'task.received', task_id: id, source: 'playground' } },
+      { agent: 'brain', delay: 520, json: { event: 'plan.req', model: 'claude-sonnet-4', plan: ['parse_intent', 'recall_context', 'execute', 'summarise'], confidence: 0.84 } },
+      { agent: 'memory', delay: 640, json: { event: 'recall.ctx', backend: 'pgvector', hits: 2, query: trimmed } },
+      { agent: 'hands', delay: 820, json: { event: 'exec.cmd', tool: 'auto.dispatch', status: 'ok', steps: 3 } },
+      { agent: 'brain', delay: 700, json: { event: 'synthesise', tokens_in: 1240, tokens_out: 218 } },
+      { agent: 'memory', delay: 360, json: { event: 'trace.put', trace_id: 'tr_' + id.slice(4) + '_fin', persist: 'ok' } },
+      { agent: 'result', delay: 480, json: { status: 'ok', summary: 'Task completed via standard 4-step plan. See trace for details.', latency_ms: 3760, agents: ['brain','memory','hands'] } },
+    ];
+  }
+
+  const ROLE_LABELS = {
+    brain: { role: 'Brain', sub: 'claude' },
+    memory: { role: 'Memory', sub: 'hermes' },
+    hands: { role: 'Hands', sub: 'openclaw' },
+    orchestrator: { role: 'Loom', sub: 'n8n' },
+    result: { role: 'Result', sub: 'final' },
+    user: { role: 'You', sub: 'task.in' },
+  };
+
+  // ===== JSON syntax highlight =====
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function highlightJson(obj) {
+    let json = JSON.stringify(obj, null, 2);
+    // Tokenise on raw JSON (before HTML-escaping) so quote chars match.
+    // Each token's text is HTML-escaped at insertion time.
+    let out = '';
+    const re = /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|(-?\d+\.?\d*)|([\[\]\{\},])|([^\[\]\{\},"\d\strue\bfalse\bnull\b]+)/g;
+    let lastIndex = 0;
+    let m;
+    while ((m = re.exec(json)) !== null) {
+      // Append any whitespace/text before this match
+      if (m.index > lastIndex) out += escapeHtml(json.slice(lastIndex, m.index));
+      const [full, str, colon, bool, num, punct] = m;
+      if (str !== undefined) {
+        const cls = colon ? 'k' : 's';
+        out += '<span class="' + cls + '">' + escapeHtml(str) + '</span>' + (colon || '');
+      } else if (bool !== undefined) {
+        out += '<span class="b">' + bool + '</span>';
+      } else if (num !== undefined) {
+        out += '<span class="n">' + num + '</span>';
+      } else if (punct !== undefined) {
+        out += '<span class="p">' + punct + '</span>';
+      } else {
+        out += escapeHtml(full);
+      }
+      lastIndex = re.lastIndex;
+    }
+    if (lastIndex < json.length) out += escapeHtml(json.slice(lastIndex));
+    return out;
+  }
+
+  function timestamp(offsetMs) {
+    const m = Math.floor(offsetMs / 60000);
+    const s = Math.floor((offsetMs % 60000) / 1000);
+    const ms = Math.floor(offsetMs % 1000);
+    return `T+${m > 0 ? m + 'm' : ''}${s}.${String(ms).padStart(3, '0')}s`;
+  }
+
+  // ===== Bubble factory =====
+  function addBubble({ agent, kind = 'json', body, isUser = false, offset = 0 }) {
+    stream.classList.add('has-content');
+    const bubble = document.createElement('article');
+    bubble.className = 'pg-bubble' + (isUser ? ' user' : '');
+    bubble.dataset.agent = agent;
+
+    const labels = ROLE_LABELS[agent] || ROLE_LABELS.orchestrator;
+    const labelEl = document.createElement('div');
+    labelEl.className = 'pg-bubble-label';
+    labelEl.innerHTML = `<span class="pg-bubble-role">${labels.role}</span><span class="pg-bubble-time">${labels.sub}</span>`;
+
+    const bodyEl = document.createElement('div');
+    bodyEl.className = 'pg-bubble-body';
+
+    if (kind === 'typing') {
+      bodyEl.innerHTML = '<div class="pg-typing" aria-label="Thinking"><span></span><span></span><span></span></div>';
+    } else if (kind === 'text') {
+      bodyEl.textContent = body;
+    } else {
+      bodyEl.innerHTML = '<pre>' + highlightJson(body) + '</pre>';
+    }
+
+    if (isUser) {
+      bubble.appendChild(bodyEl);
+      bubble.appendChild(labelEl);
+    } else {
+      bubble.appendChild(labelEl);
+      bubble.appendChild(bodyEl);
+    }
+    stream.appendChild(bubble);
+    requestAnimationFrame(() => {
+      stream.scrollTop = stream.scrollHeight;
+    });
+    return bubble;
+  }
+
+  function clearStream() {
+    Array.from(stream.querySelectorAll('.pg-bubble')).forEach(b => b.remove());
+    stream.classList.remove('has-content');
+  }
+
+  function setStatus(state, label) {
+    statusEl.dataset.state = state;
+    statusLabel.textContent = label;
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, Math.max(80, ms * speed))); }
+
+  // ===== Run a sequence =====
+  async function runTask(prompt, sequence) {
+    if (running) return;
+    running = true;
+    submit.disabled = true;
+    presets.forEach(p => p.disabled = true);
+    clearStream();
+    setStatus('running', 'streaming');
+
+    addBubble({ agent: 'user', isUser: true, kind: 'text', body: prompt });
+    await sleep(220);
+
+    let totalOffset = 0;
+    for (const step of sequence) {
+      // Show typing indicator first
+      const typing = addBubble({ agent: step.agent, kind: 'typing' });
+      await sleep(step.delay * 0.45);
+      // Replace typing with actual content
+      const labels = ROLE_LABELS[step.agent];
+      typing.querySelector('.pg-bubble-body').innerHTML = '<pre>' + highlightJson(step.json) + '</pre>';
+      stream.scrollTop = stream.scrollHeight;
+      await sleep(step.delay * 0.55);
+      totalOffset += step.delay;
+    }
+
+    setStatus('done', 'completed');
+    submit.disabled = false;
+    presets.forEach(p => p.disabled = false);
+    running = false;
+  }
+
+  // ===== Wire up =====
+  presets.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.preset;
+      const preset = PRESETS[key];
+      if (!preset) return;
+      input.value = preset.prompt;
+      runTask(preset.prompt, preset.sequence);
+    });
+  });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const value = input.value.trim();
+    if (!value || running) return;
+    runTask(value, buildGenericSequence(value));
+  });
 })();
 </script>
 
