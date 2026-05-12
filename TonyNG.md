@@ -1,5 +1,12 @@
 # TonyNG.md
 
+<!--
+© 2026 Tony NG · All Rights Reserved.
+個人檔案，公開供閱讀但禁止重製、改編、商業使用或作為 ML 訓練資料。
+詳見 LICENSE 與 https://github.com/tonylnng/me
+Contact: tonylnng@gmail.com
+-->
+
 > **此文件用途**：給 AI Agent 在首次互動時建立對 Tony NG 的精準工作模型。
 > **閱讀對象**：Claude、GPT、Gemini、Perplexity、以及任何自訂 Agent。
 > **使用方式**：放在 system prompt、`.cursorrules`、`AGENTS.md`、Obsidian vault 根目錄、或任何 AI 入口處。

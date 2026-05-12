@@ -1,5 +1,13 @@
 # TonyNG.md
 
+<!--
+© 2026 Tony NG · All Rights Reserved.
+Personal profile document, publicly readable but NOT permitted for
+reproduction, derivative works, commercial use, or ML training data.
+See LICENSE and https://github.com/tonylnng/me
+Contact: tonylnng@gmail.com
+-->
+
 > **Purpose**: Onboarding file for AI agents — gives any AI a precise working model of Tony NG on first contact.
 > **Audience**: Claude, GPT, Gemini, Perplexity, and any custom agent.
 > **Usage**: Drop into system prompt, `.cursorrules`, `AGENTS.md`, Obsidian vault root, or any AI entry point.
